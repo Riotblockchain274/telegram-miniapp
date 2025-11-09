@@ -1,436 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Riotblockchain</title>
-  <style>
-    :root{
-      --bg:#0d0d0f;
-      --card:#111;
-      --accent:#7d5fff; /* purple */
-      --gold:#d4af37;
-      --green:#00ff88;
-      --muted:#9aa0a6;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,Arial,sans-serif;
-      background:var(--bg);
-      color:#fff;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-    }
-    main{padding:18px;padding-bottom:110px}
-    h2{margin:0 0 12px 0}
-    /* Welcome + marquee */
-    .welcome-row{margin-top:6px}
-    .welcome-title{font-size:22px;font-weight:700}
-    .ticker-wrap{
-      overflow:hidden;
-      white-space:nowrap;
-      border-radius:10px;
-      background:linear-gradient(90deg, rgba(125,95,255,0.06), rgba(212,175,55,0.03));
-      padding:8px 10px;
-      margin-top:10px;
-      color:var(--muted);
-      font-size:13px;
-    }
-    .ticker{
-      display:inline-block;
-      padding-left:100%;
-      animation: scroll-left 18s linear infinite;
-    }
-    @keyframes scroll-left {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-100%); }
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riotblockchain</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #0d0d0d;
+        color: white;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+      .balance-card {
+        background-color: #1c1c1c;
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+      }
+      .balance-card h1 {
+        color: #00ff88;
+        font-size: 28px;
+        margin: 10px 0;
+      }
+      .button-row {
+        margin: 15px;
+      }
+      .button-row button {
+        background-color: #00ff88;
+        border: none;
+        color: black;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 10px;
+        font-weight: bold;
+      }
+      nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #1a1a1a;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+      }
+      nav button {
+        background: none;
+        border: none;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+      }
+      nav button.active {
+        color: #00ff88;
+      }
+      section {
+        display: none;
+      }
+      section.active {
+        display: block;
+      }
+    </style>
+  </head>
 
-    /* Balance card */
-    .balance-card{
-      background:linear-gradient(135deg, rgba(125,95,255,0.06), rgba(0,0,0,0.4));
-      border-radius:16px;
-      padding:18px;
-      margin-top:14px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-    }
-    .balance-card p{margin:0;color:var(--muted);font-size:13px}
-    .balance-card h1{margin:8px 0 0 0;color:var(--green);font-size:28px}
-
-    /* Buttons row */
-    .button-row{
-      display:flex;gap:12px;justify-content:center;margin-top:16px;
-    }
-    .btn{
-      background:var(--card);
-      color:#fff;
-      border-radius:12px;
-      padding:10px 18px;
-      border:1px solid rgba(255,255,255,0.03);
-      cursor:pointer;
-      min-width:120px;
-      font-weight:600;
-      box-shadow:0 6px 18px rgba(0,0,0,0.6);
-    }
-    .btn.primary{
-      background:linear-gradient(90deg,var(--accent),#5b3bff);
-      color:#fff;
-      border:none;
-    }
-    .invite-btn{
-      display:block;margin:18px auto 6px auto;padding:10px 18px;border-radius:12px;background:transparent;border:1px dashed rgba(255,255,255,0.06);color:var(--muted)
-    }
-
-    /* Mining card */
-    .mining-card{
-      margin:18px auto;
-      background:linear-gradient(180deg, rgba(125,95,255,0.06), rgba(212,175,55,0.03));
-      border-radius:14px;padding:12px;width:92%;
-      display:flex;gap:12px;align-items:center;
-      border:1px solid rgba(125,95,255,0.06);
-    }
-    .mining-art{
-      width:90px;height:80px;border-radius:10px;
-      background:linear-gradient(135deg,#5b3bff,#b38cff);
-      display:flex;align-items:center;justify-content:center;font-size:34px;
-      color:var(--gold);
-      box-shadow:0 8px 24px rgba(91,59,255,0.12);
-    }
-    .mining-info{flex:1;text-align:left}
-    .mining-info h3{margin:0 0 6px 0}
-    .mining-info p{margin:0;color:var(--muted);font-size:13px}
-
-    /* Safaricom recharge section (hidden by default) */
-    .safari{
-      display:none;padding:18px;
-    }
-    .safari.active{display:block}
-    .card{
-      background:var(--card);border-radius:12px;padding:12px;margin:10px 0;
-    }
-    .safari .amount{font-size:20px;color:var(--gold);font-weight:700}
-    .safari .account-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
-    .copy-btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:6px 10px;border-radius:8px;cursor:pointer;color:var(--muted)}
-    .sms-input{width:100%;height:120px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);resize:none;background:#080808;color:#fff}
-    .check-btn{width:100%;padding:12px;border-radius:10px;border:none;margin-top:10px;background:rgba(125,95,255,0.12);color:var(--muted);cursor:not-allowed}
-    .check-btn.enabled{background:linear-gradient(90deg,var(--accent),#5b3bff);color:#fff;cursor:pointer}
-
-    nav{position:fixed;bottom:0;left:0;width:100%;display:flex;justify-content:space-around;padding:12px 0;background:#0b0b0b;border-top:1px solid rgba(255,255,255,0.03)}
-    nav button{background:none;border:none;color:var(--muted);font-weight:700;cursor:pointer}
-    nav button.active{color:var(--accent)}
-  </style>
-</head>
-<body>
-  <main>
-    <!-- HOME -->
+  <body>
     <section id="home" class="active">
-      <div class="welcome-row">
-        <div class="welcome-title" id="welcome-text">👋 Welcome, User</div>
-        <div class="ticker-wrap" aria-hidden="true">
-          <div class="ticker" id="ticker">
-            <!-- ticker messages injected here -->
-          </div>
-        </div>
-      </div>
-
-      <div class="balance-card" role="region" aria-label="balance">
+      <h2 id="welcome-text">👋 Welcome, User</h2>
+      <div class="balance-card">
         <p>Available Balance</p>
         <h1 id="balance">Ksh 0.00</h1>
       </div>
-
       <div class="button-row">
-        <button class="btn btn-recharge">Recharge</button>
-        <button class="btn btn-withdraw">Withdraw</button>
-      </div>
-
-      <button class="invite-btn" id="inviteBtn">🎁 Invite Friends</button>
-
-      <div class="mining-card" aria-hidden="false">
-        <div class="mining-art">⛏️</div>
-        <div class="mining-info">
-          <h3>VeloraXF Mining Plant</h3>
-          <p>High-efficiency mining racks — purple & gold design. Earn daily rewards.</p>
-        </div>
+        <button class="btn-recharge">Recharge</button>
+        <button class="btn-withdraw">Withdraw</button>
       </div>
     </section>
 
-    <!-- Wallet, Products, Settings, Contact -->
     <section id="wallet">
       <h2>💳 Wallet</h2>
-      <p>Transaction history will appear here (coming next step)</p>
+      <p>Coming soon...</p>
     </section>
 
     <section id="products">
       <h2>📦 Products</h2>
-      <p>Products and packages will show here.</p>
+      <p>Products and services will be displayed here.</p>
     </section>
 
     <section id="settings">
       <h2>⚙️ Settings</h2>
-      <p>Profile and security.</p>
+      <p>Adjust your preferences here.</p>
     </section>
 
     <section id="contact">
       <h2>📞 Contact</h2>
-      <p>Support:https://t.me/Geraldbarack</p>
+      <p>Support:t.me/Madamangeline56</p>
     </section>
 
-    <!-- Safaricom recharge page -->
-    <section id="safaricom" class="safari" aria-hidden="true">
-      <h2>Safaricom - Confirm Payment</h2>
-      <div class="card">
-        <p style="color:var(--muted);margin:0">Step 1: Copy a Safaricom account</p>
-        <div class="account-row">
-          <div>
-            <div class="safari-account" id="safariAccount" style="font-weight:700">0106607980</div>
-            <div style="color:var(--muted);font-size:13px;margin-top:6px">Total Amount:</div>
-            <div class="amount" id="safariAmount">Ksh 0</div>
-          </div>
-          <div>
-            <button class="copy-btn" id="copyAccount">Copy</button>
-          </div>
-        </div>
-      </div>
+    <nav>
+      <button class="tab-button active" data-target="home">🏠 Home</button>
+      <button class="tab-button" data-target="wallet">💳 Wallet</button>
+      <button class="tab-button" data-target="products">📦 Products</button>
+      <button class="tab-button" data-target="settings">⚙️ Settings</button>
+      <button class="tab-button" data-target="contact">📞 Contact</button>
+    </nav>
 
-      <div class="card">
-        <p style="color:var(--muted);margin:0">Step 2: Your SMS CONTENT</p>
-        <textarea id="smsText" class="sms-input" placeholder="Paste the M-Pesa confirmation SMS here..."></textarea>
-        <button id="checkPayment" class="check-btn" disabled>Check Payment</button>
-      </div>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+      // ✅ Telegram WebApp integration
+      const tg = window.Telegram.WebApp;
+      tg.expand();
 
-      <div style="margin-top:12px">
-        <button class="btn" id="backToHome">← Back</button>
-      </div>
-    </section>
-  </main>
+      // ✅ Dynamic username
+      const user = tg.initDataUnsafe?.user;
+      const username = user?.first_name || "User";
+      document.getElementById("welcome-text").textContent = "👋 Welcome, " + username;
 
-  <nav>
-    <button class="tab active" data-target="home">🏠 Home</button>
-    <button class="tab" data-target="wallet">💳 Wallet</button>
-    <button class="tab" data-target="products">📦 Products</button>
-    <button class="tab" data-target="settings">⚙️ Settings</button>
-    <button class="tab" data-target="contact">📞 Contact</button>
-  </nav>
-
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    // ======= Config (edit these anytime in index.html) ===========
-    let safaricomAccount = "0117614107"; // edit this line in GitHub when you want to change account
-    // ============================================================
-
-    // Basic app state
-    const tg = window.Telegram?.WebApp || {};
-    try{ tg.expand?.(); }catch(e){}
-    const user = tg.initDataUnsafe?.user;
-    const username = user?.first_name || "User";
-    document.getElementById("welcome-text").textContent = "👋 Welcome, " + username;
-
-    // balance (loaded earlier from data.json — fallback here)
-    let balance = 0.0;
-    async function loadBalanceLocal() {
-      try {
-        const res = await fetch("data.json");
-        const data = await res.json();
-        const id = (user?.id ? String(user.id) : "12345");
-        balance = data.users?.[id]?.balance ?? 0.0;
-      } catch(e){
-        console.warn("Could not load data.json, using default balance");
-        balance = 0.0;
+      // ✅ Balance system
+      let balance = 1245.6;
+      function updateBalance() {
+        document.getElementById("balance").textContent =
+          "Ksh " + balance.toLocaleString("en-KE", { minimumFractionDigits: 2 });
       }
       updateBalance();
-    }
-    function updateBalance() {
-      document.getElementById("balance").textContent =
-        "Ksh " + Number(balance).toLocaleString("en-KE",{minimumFractionDigits:2});
-    }
-    loadBalanceLocal();
 
-    // ===== Ticker =====
-    const tickerEl = document.getElementById("ticker");
-    // initial demo messages
-    const tickerMessages = [
-      "07***789 just recharged Ksh 500",
-      "07***034 just recharged Ksh 1500",
-      "07***222 just withdrew Ksh 200",
-      "07***888 just recharged Ksh 2500"
-    ];
-    function renderTicker(){
-      // build long repeating text to make scroll feel continuous
-      tickerEl.innerHTML = tickerMessages.concat(tickerMessages).join("   •   ");
-      // restart animation (force)
-      tickerEl.style.animation = "none";
-      // small timeout to reapply
-      setTimeout(()=> tickerEl.style.animation = "",20);
-    }
-    renderTicker();
-
-    function pushTicker(text){
-      tickerMessages.unshift(text);
-      if(tickerMessages.length>20) tickerMessages.pop();
-      renderTicker();
-    }
-
-    // ===== Navigation =====
-    const tabs = document.querySelectorAll("nav .tab");
-    const sections = document.querySelectorAll("main > section");
-    function showSection(id){
-      sections.forEach(s=>{ s.classList.remove("active"); s.classList.remove("active-screen"); s.style.display = "none"; });
-      const target = document.getElementById(id);
-      if(!target) return;
-      // handle safaricom separately (not in nav)
-      if(id === 'safaricom'){
-        sections.forEach(s=>s.style.display='none');
-        target.style.display = 'block';
-        target.classList.add('active');
-      } else {
-        sections.forEach(s=>s.style.display='none');
-        target.style.display = 'block';
-        target.classList.add('active');
-      }
-      tabs.forEach(t=>t.classList.toggle('active', t.getAttribute('data-target')===id));
-    }
-    // nav clicks
-    tabs.forEach(t=>{
-      t.addEventListener('click',()=>{
-        showSection(t.getAttribute('data-target'));
-      });
-    });
-    // initial show home
-    showSection('home');
-
-    // ===== Recharge & Withdraw buttons behavior =====
-    document.querySelector(".btn-recharge").addEventListener("click", async () => {
-  const amount = prompt("Enter amount to recharge:");
-  if (amount && !isNaN(amount)) {
-    const userId = user?.id || "unknown";
-    try {
-      const response = await fetch("/api/recharge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, amount }),
-      });
-      const data = await response.json();
-      alert("Recharge request sent for Ksh " + amount + ". Please complete payment and wait for approval.");
-    } catch (error) {
-      alert("Error sending recharge. Try again later.");
-      console.error(error);
-    }
-  }
-});
-      // set safaricom page values and open it
-      document.getElementById('safariAmount').textContent = "Ksh " + Number(amount).toLocaleString("en-KE",{minimumFractionDigits:2});
-      document.getElementById('safariAccount').textContent = safaricomAccount;
-      // store pending amount
-      window.pendingRecharge = amount;
-      showSection('safaricom');
-      // add ticker event
-      pushTicker(maskPhone(user?.phone_number || "07***" + Math.floor(Math.random()*900+100)) + " is attempting to recharge Ksh " + amount);
-    });
-
-    document.querySelector('.btn-withdraw').addEventListener('click', ()=>{
-      const amountText = prompt("Enter amount to withdraw (KES):");
-      if(!amountText) return;
-      const amount = parseFloat(amountText);
-      if(isNaN(amount) || amount <= 0){ alert("Enter a valid number"); return; }
-      if(amount > balance){ alert("Insufficient balance"); return; }
-      balance -= amount;
-      updateBalance();
-      alert("Withdrawal request noted: Ksh " + amount);
-      pushTicker(maskPhone(user?.phone_number || "07***" + Math.floor(Math.random()*900+100)) + " just withdrew Ksh " + amount);
-      // TODO: send withdrawal request to backend when ready
-    });
-
-    // invite button (placeholder)
-    document.getElementById('inviteBtn').addEventListener('click', ()=>{
-      const shareText = `Join Riotblockchain: https://t.me/${tg.initDataUnsafe?.user ? tg.initDataUnsafe.user.username ?? '' : ''}`;
-      try{
-        navigator.clipboard.writeText(shareText);
-        alert("Invite link copied to clipboard. Share it with your friends!");
-      }catch(e){
-        alert("Invite: " + shareText);
-      }
-    });
-
-    // ===== Safaricom page controls =====
-    document.getElementById('copyAccount').addEventListener('click', async ()=>{
-      const acct = document.getElementById('safariAccount').textContent.trim();
-      try{
-        await navigator.clipboard.writeText(acct);
-        alert("Account copied: " + acct);
-      }catch(e){
-        alert("Copy: " + acct);
-      }
-    });
-
-    const smsText = document.getElementById('smsText');
-    const checkPaymentBtn = document.getElementById('checkPayment');
-
-    smsText.addEventListener('input', ()=>{
-      const hasText = smsText.value.trim().length > 8;
-      if(hasText){
-        checkPaymentBtn.disabled = false;
-        checkPaymentBtn.classList.add('enabled');
-      } else {
-        checkPaymentBtn.disabled = true;
-        checkPaymentBtn.classList.remove('enabled');
-      }
-    });
-
-    checkPaymentBtn.addEventListener('click', ()=>{
-      if(checkPaymentBtn.disabled) return;
-      // For now: simulate payment verification by looking for a number or "Confirmed" in text
-      const txt = smsText.value.trim();
-      if(txt.length < 8){ alert("Please paste your payment SMS text."); return; }
-
-      // Simulate success and update balance locally
-      const amt = window.pendingRecharge ?? 0;
-      if(amt > 0){
-        balance += amt;
-        updateBalance();
-        alert("Payment verified! Balance updated.");
-        pushTicker(maskPhone(user?.phone_number || "07***" + Math.floor(Math.random()*900+100)) + " just recharged Ksh " + amt);
-        // clear pending
-        window.pendingRecharge = 0;
-        smsText.value = "";
-        checkPaymentBtn.disabled = true;
-        checkPaymentBtn.classList.remove('enabled');
-        // go back home
-        showSection('home');
-      } else {
-        alert("No pending recharge found. Please start Recharge again.");
-      }
-    });
-
-    document.getElementById('backToHome').addEventListener('click', ()=>{
-      showSection('home');
-    });
-
-    // small helper to obfuscate phone numbers
-    function maskPhone(raw){
-      try{
-        // if raw looks like a phone number, mask middle digits
-        const s = (String(raw));
-        if(s.length >= 7){
-          return s.slice(0,2) + "***" + s.slice(-3);
+      document.querySelector(".btn-recharge").addEventListener("click", () => {
+        const amount = prompt("Enter amount to recharge:");
+        if (amount && !isNaN(amount)) {
+          balance += parseFloat(amount);
+          updateBalance();
+          alert("Recharged Ksh " + amount);
         }
-        return s;
-      }catch(e){ return raw; }
-    }
+      });
 
-    // expose a quick admin function to change safaricom account (or edit in GitHub)
-    window.setSafaricomAccount = function(newAcc){
-      safaricomAccount = newAcc;
-      // if currently in safaricom page update shown account
-      const el = document.getElementById('safariAccount');
-      if(el) el.textContent = safaricomAccount;
-    };
+      document.querySelector(".btn-withdraw").addEventListener("click", () => {
+        const amount = prompt("Enter amount to withdraw:");
+        if (amount && !isNaN(amount)) {
+          if (parseFloat(amount) > balance) {
+            alert("Insufficient balance!");
+          } else {
+            balance -= parseFloat(amount);
+            updateBalance();
+            alert("Withdrew Ksh " + amount);
+          }
+        }
+      });
 
-    // Ensure ticker keeps moving on small content changes
-    setInterval(()=> {
-      // minor no-op to keep animation smooth on some androids
-      tickerEl.style.willChange = tickerEl.style.willChange ? '' : 'transform';
-    }, 8000);
-  </script>
-</body>
-  </html>
+      // ✅ Navigation logic
+      const tabs = document.querySelectorAll(".tab-button");
+      const sections = document.querySelectorAll("section");
+
+      tabs.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          tabs.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const target = btn.getAttribute("data-target");
+          sections.forEach((sec) => sec.classList.remove("active"));
+          document.getElementById(target).classList.add("active");
+        });
+      });
+    </script>
+  </body>
+</html>
