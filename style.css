@@ -1,0 +1,39 @@
+body {
+  font-family: Poppins, sans-serif;
+  margin: 0;
+  background-color: #f4f4f4;
+  text-align: center;
+}
+
+.section {
+  padding: 20px;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #fff;
+  border-top: 1px solid #ccc;
+  padding: 10px 0;
+}
+
+.bottom-nav button {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 16px;
+}
+
+button {
+  background-color: #6a0dad;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  margin: 5px;
+}
