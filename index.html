@@ -1,53 +1,106 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Welcome to Riotblockchain</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f5f5f5;
-        text-align: center;
-        padding: 40px;
-      }
-      .card {
-        background: white;
-        padding: 20px;
-        border-radius: 20px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        max-width: 400px;
-        margin: auto;
-      }
-      button {
-        background: #7d5fff;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 10px 20px;
-        margin-top: 20px;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <h2>Welcome to Riotblockchain</h2>
-      <p id="user"></p>
-      <button id="confirmBtn">Click Me</button>
+DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riot Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background-color: #0f0f0f;
+      color: white;
+    }
+    .container {
+      padding: 20px;
+      text-align: center;
+    }
+    .balance-card {
+      background: linear-gradient(135deg, #1e1e1e, #292929);
+      border-radius: 20px;
+      padding: 25px;
+      margin: 20px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .balance-card h2 {
+      margin: 0;
+      font-size: 1rem;
+      color: #aaa;
+    }
+    .balance-card h1 {
+      margin-top: 8px;
+      font-size: 2rem;
+      color: #00ff9d;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin: 25px 0;
+    }
+    .btn {
+      background: #1a1a1a;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 25px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn:hover {
+      background: #00ff9d;
+      color: #000;
+    }
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #121212;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid #333;
+    }
+    .nav button {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 0.9rem;
+    }
+    .nav button.active {
+      color: #00ff9d;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>👋 Welcome, <span id="username">User</span></h1>
+    <div class="balance-card">
+      <h2>Available Balance</h2>
+      <h1>$1,245.60</h1>
     </div>
 
-    <script>
+    <div class="buttons">
+      
+     
+      <button class="btn">Recharge</button>
+      <button class="btn">Withdraw</button>
+
+  <div class="nav">
+    <button class="active">🏠 Home</button>
+    <button>💳 Wallet</button>
+    <button>⚙️ Settings</button>
+  </div>
+
+  <script>
+    // Telegram Mini App setup
+    if (window.Telegram?.WebApp) {
       const tg = window.Telegram.WebApp;
-      tg.expand(); // expands to full screen
-      const user = tg.initDataUnsafe?.user;
-
-      document.getElementById("user").innerText =
-        `Hello ${user?.first_name || "Guest"}!`;
-
-      document.getElementById("confirmBtn").onclick = () => {
-        tg.sendData("User clicked the button!");
-      };
-    </script>
-  </body>
-</html>
+      tg.expand();
+      document.getElementById("username").textContent =
+        tg.initDataUnsafe?.user?.first_name || "User";
+    }
+  </script>
+</body>
+    </html>
