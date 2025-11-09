@@ -1,172 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riot Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background-color: #0f0f0f;
-      color: white;
-    }
-    .screen {
-      display: none;
-      padding: 20px;
-      text-align: center;
-    }
-    .active-screen {
-      display: block;
-    }
-    .balance-card {
-      background: linear-gradient(135deg, #1e1e1e, #292929);
-      border-radius: 20px;
-      padding: 25px;
-      margin: 20px 0;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    }
-    .balance-card h2 {
-      margin: 0;
-      font-size: 1rem;
-      color: #aaa;
-    }
-    .balance-card h1 {
-      margin-top: 8px;
-      font-size: 2rem;
-      color: #00ff9d;
-    }
-    .buttons {
-      display: flex;
-      justify-content: space-around;
-      margin: 25px 0;
-    }
-    .btn {
-      background: #1a1a1a;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 25px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .btn:hover {
-      background: #00ff9d;
-      color: #000;
-    }
-    .nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #121212;
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
-      border-top: 1px solid #333;
-    }
-    .nav button {
-      background: none;
-      border: none;
-      color: #888;
-      font-size: 0.9rem;
-    }
-    .nav button.active {
-      color: #00ff9d;
-    }
-  </style>
-</head>
-<body>
-  <!-- HOME SCREEN -->
-  <div id="home" class="screen active-screen">
-    <h1>👋 Welcome, <span id="username">User</span></h1>
-    <div class="balance-card">
-      <h2>Available Balance</h2>
-      <h1>$1,245.60</h1>
-    </div>
-    <div class="buttons">
-      <button class="btn">Recharge📥</button>
-      <button class="btn">Withdraw📤</button>
-    </div>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riotblockchain</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #0d0d0d;
+        color: white;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+      .balance-card {
+        background-color: #1c1c1c;
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+      }
+      .balance-card h1 {
+        color: #00ff88;
+        font-size: 28px;
+        margin: 10px 0;
+      }
+      .button-row {
+        margin: 15px;
+      }
+      .button-row button {
+        background-color: #00ff88;
+        border: none;
+        color: black;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 10px;
+        font-weight: bold;
+      }
+      nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #1a1a1a;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+      }
+      nav button {
+        background: none;
+        border: none;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+      }
+      nav button.active {
+        color: #00ff88;
+      }
+      section {
+        display: none;
+      }
+      section.active {
+        display: block;
+      }
+    </style>
+  </head>
 
-  <!-- WALLET SCREEN -->
-  <div id="wallet" class="screen">
-    <h1>💳 Wallet</h1>
-    <p>Transactions and assets will appear here soon.</p>
-  </div>
+  <body>
+    <section id="home" class="active">
+      <h2 id="welcome-text">👋 Welcome, User</h2>
+      <div class="balance-card">
+        <p>Available Balance</p>
+        <h1 id="balance">Ksh 0.00</h1>
+      </div>
+      <div class="button-row">
+        <button class="btn-recharge">Recharge</button>
+        <button class="btn-withdraw">Withdraw</button>
+      </div>
+    </section>
 
-  <!-- SETTINGS SCREEN -->
-  <div id="settings" class="screen">
-    <h1>⚙️ Settings</h1>
-    <p>Update profile, security, and preferences here.</p>
-  </div>
+    <section id="wallet">
+      <h2>💳 Wallet</h2>
+      <p>Coming soon...</p>
+    </section>
 
-  <!-- NAVIGATION BAR -->
-  <div class="nav">
-    <button id="homeBtn" class="active">🏠 Home</button>
-    <button id="walletBtn">💳 Wallet</button>
-    <button id="productsBtn">🧊 products</button>
-    <button id="settingsBtn">⚙️ Settings</button>
-    <button id="SupportBtn">☎️ Contact</button>
-  </div>
+    <section id="products">
+      <h2>📦 Products</h2>
+      <p>Products and services will be displayed here.</p>
+    </section>
 
-<script>
-  // Telegram init
-  let tgUserId = "12345"; // default test ID
+    <section id="settings">
+      <h2>⚙️ Settings</h2>
+      <p>Adjust your preferences here.</p>
+    </section>
 
-  if (window.Telegram?.WebApp) {
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    const user = tg.initDataUnsafe?.user;
-    document.getElementById("username").textContent =
-      user?.first_name || "User";
-    if (user?.id) tgUserId = user.id.toString();
-  }
+    <section id="contact">
+      <h2>📞 Contact</h2>
+      <p>Support: riotblockchain.help@gmail.com</p>
+    </section>
 
-  // Navigation logic
-  const screens = {
-    home: document.getElementById("home"),
-    wallet: document.getElementById("wallet"),
-    settings: document.getElementById("settings"),
-  };
+    <nav>
+      <button class="tab-button active" data-target="home">🏠 Home</button>
+      <button class="tab-button" data-target="wallet">💳 Wallet</button>
+      <button class="tab-button" data-target="products">📦 Products</button>
+      <button class="tab-button" data-target="settings">⚙️ Settings</button>
+      <button class="tab-button" data-target="contact">📞 Contact</button>
+    </nav>
 
-  const navButtons = {
-    home: document.getElementById("homeBtn"),
-    wallet: document.getElementById("walletBtn"),
-    settings: document.getElementById("settingsBtn"),
-  };
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+      // ✅ Telegram WebApp integration
+      const tg = window.Telegram.WebApp;
+      tg.expand();
 
-  function showScreen(name) {
-    for (const key in screens) {
-      screens[key].classList.remove("active-screen");
-      navButtons[key].classList.remove("active");
-    }
-    screens[name].classList.add("active-screen");
-    navButtons[name].classList.add("active");
-  }
+      // ✅ Dynamic username
+      const user = tg.initDataUnsafe?.user;
+      const username = user?.first_name || "User";
+      document.getElementById("welcome-text").textContent = "👋 Welcome, " + username;
 
-  navButtons.home.onclick = () => showScreen("home");
-  navButtons.wallet.onclick = () => showScreen("wallet");
-  navButtons.settings.onclick = () => showScreen("settings");
+      // ✅ Balance system
+      let balance = 1245.6;
+      function updateBalance() {
+        document.getElementById("balance").textContent =
+          "Ksh " + balance.toLocaleString("en-KE", { minimumFractionDigits: 2 });
+      }
+      updateBalance();
 
-  // Load user balance dynamically
-  async function loadBalance() {
-    try {
-      const response = await fetch("data.json");
-      const data = await response.json();
-      const userData = data.users[tgUserId];
-      const balance = userData ? userData.balance : 0.0;
-      document.querySelector(".balance-card h1").textContent =
-  "Ksh " + balance.toLocaleString("en-KE", { minimumFractionDigits: 2 });
-    } catch (err) {
-      console.error("Error loading balance:", err);
-    }
-  }
+      document.querySelector(".btn-recharge").addEventListener("click", () => {
+        const amount = prompt("Enter amount to recharge:");
+        if (amount && !isNaN(amount)) {
+          balance += parseFloat(amount);
+          updateBalance();
+          alert("Recharged Ksh " + amount);
+        }
+      });
 
-  loadBalance();
-</script>
-</body>
+      document.querySelector(".btn-withdraw").addEventListener("click", () => {
+        const amount = prompt("Enter amount to withdraw:");
+        if (amount && !isNaN(amount)) {
+          if (parseFloat(amount) > balance) {
+            alert("Insufficient balance!");
+          } else {
+            balance -= parseFloat(amount);
+            updateBalance();
+            alert("Withdrew Ksh " + amount);
+          }
+        }
+      });
+
+      // ✅ Navigation logic
+      const tabs = document.querySelectorAll(".tab-button");
+      const sections = document.querySelectorAll("section");
+
+      tabs.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          tabs.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const target = btn.getAttribute("data-target");
+          sections.forEach((sec) => sec.classList.remove("active"));
+          document.getElementById(target).classList.add("active");
+        });
+      });
+    </script>
+  </body>
 </html>
-
