@@ -1,149 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Riot Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background-color: #0f0f0f;
-      color: white;
-    }
-    .screen {
-      display: none;
-      padding: 20px;
-      text-align: center;
-    }
-    .active-screen {
-      display: block;
-    }
-    .balance-card {
-      background: linear-gradient(135deg, #1e1e1e, #292929);
-      border-radius: 20px;
-      padding: 25px;
-      margin: 20px 0;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    }
-    .balance-card h2 {
-      margin: 0;
-      font-size: 1rem;
-      color: #aaa;
-    }
-    .balance-card h1 {
-      margin-top: 8px;
-      font-size: 2rem;
-      color: #00ff9d;
-    }
-    .buttons {
-      display: flex;
-      justify-content: space-around;
-      margin: 25px 0;
-    }
-    .btn {
-      background: #1a1a1a;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 25px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .btn:hover {
-      background: #00ff9d;
-      color: #000;
-    }
-    .nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #121212;
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
-      border-top: 1px solid #333;
-    }
-    .nav button {
-      background: none;
-      border: none;
-      color: #888;
-      font-size: 0.9rem;
-    }
-    .nav button.active {
-      color: #00ff9d;
-    }
-  </style>
-</head>
-<body>
-  <!-- HOME SCREEN -->
-  <div id="home" class="screen active-screen">
-    <h1>👋 Welcome, <span id="username">User</span></h1>
-    <div class="balance-card">
-      <h2>Available Balance</h2>
-      <h1>$1,245.60</h1>
-    </div>
-    <div class="buttons">
-      <button class="btn">Recharge</button>
-      <button class="btn">Withdraw</button>
-    </div>
-  </div>
 
-  <!-- WALLET SCREEN -->
-  <div id="wallet" class="screen">
-    <h1>💳 Wallet</h1>
-    <p>Transactions and assets will appear here soon.</p>
-  </div>
+<script>
+  // Telegram init
+  let tgUserId = "12345"; // default test ID
 
-  <!-- SETTINGS SCREEN -->
-  <div id="settings" class="screen">
-    <h1>⚙️ Settings</h1>
-    <p>Update profile, security, and preferences here.</p>
-  </div>
+  if (window.Telegram?.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+    const user = tg.initDataUnsafe?.user;
+    document.getElementById("username").textContent =
+      user?.first_name || "User";
+    if (user?.id) tgUserId = user.id.toString();
+  }
 
-  <!-- NAVIGATION BAR -->
-  <div class="nav">
-    <button id="homeBtn" class="active">🏠 Home</button>
-    <button id="walletBtn">💳 Wallet</button>
-    <button id="settingsBtn">⚙️ Settings</button>
-  </div>
+  // Navigation logic
+  const screens = {
+    home: document.getElementById("home"),
+    wallet: document.getElementById("wallet"),
+    settings: document.getElementById("settings"),
+  };
 
-  <script>
-    // Telegram init
-    if (window.Telegram?.WebApp) {
-      const tg = window.Telegram.WebApp;
-      tg.expand();
-      document.getElementById("username").textContent =
-        tg.initDataUnsafe?.user?.first_name || "User";
+  const navButtons = {
+    home: document.getElementById("homeBtn"),
+    wallet: document.getElementById("walletBtn"),
+    settings: document.getElementById("settingsBtn"),
+  };
+
+  function showScreen(name) {
+    for (const key in screens) {
+      screens[key].classList.remove("active-screen");
+      navButtons[key].classList.remove("active");
     }
+    screens[name].classList.add("active-screen");
+    navButtons[name].classList.add("active");
+  }
 
-    // Navigation logic
-    const screens = {
-      home: document.getElementById("home"),
-      wallet: document.getElementById("wallet"),
-      settings: document.getElementById("settings"),
-    };
+  navButtons.home.onclick = () => showScreen("home");
+  navButtons.wallet.onclick = () => showScreen("wallet");
+  navButtons.settings.onclick = () => showScreen("settings");
 
-    const navButtons = {
-      home: document.getElementById("homeBtn"),
-      wallet: document.getElementById("walletBtn"),
-      settings: document.getElementById("settingsBtn"),
-    };
-
-    function showScreen(name) {
-      for (const key in screens) {
-        screens[key].classList.remove("active-screen");
-        navButtons[key].classList.remove("active");
-      }
-      screens[name].classList.add("active-screen");
-      navButtons[name].classList.add("active");
+  // Load user balance dynamically
+  async function loadBalance() {
+    try {
+      const response = await fetch("data.json");
+      const data = await response.json();
+      const userData = data.users[tgUserId];
+      const balance = userData ? userData.balance : 0.0;
+      document.querySelector(".balance-card h1").textContent =
+        "$" + balance.toFixed(2);
+    } catch (err) {
+      console.error("Error loading balance:", err);
     }
+  }
 
-    navButtons.home.onclick = () => showScreen("home");
-    navButtons.wallet.onclick = () => showScreen("wallet");
-    navButtons.settings.onclick = () => showScreen("settings");
-  </script>
-</body>
-</html>
+  loadBalance();
+</script>
