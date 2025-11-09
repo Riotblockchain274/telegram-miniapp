@@ -1,0 +1,18 @@
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  const { userId, amount } = req.body;
+
+  if (!userId || !amount) {
+    return res.status(400).json({ message: "Invalid data" });
+  }
+
+  // For now, just log the request (acts as your manual confirmation system)
+  console.log(`🔔 Recharge Request: User ${userId} wants to add Ksh ${amount}`);
+
+  // You can later make this send you a Telegram message instead of just console logging
+
+  res.status(200).json({ message: "Recharge request received" });
+}
