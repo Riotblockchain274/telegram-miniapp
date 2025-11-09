@@ -1,6 +1,21 @@
 {
+  "accounts": {
+    "safaricom": {
+      "label": "Safaricom",
+      "account": "0769388134",
+      "color": "green",
+      "logo": "https://example.com/safaricom-logo.png"
+    },
+    "airtel": {
+      "label": "Airtel",
+      "account": "0106607980",
+      "color": "red",
+      "logo": "https://example.com/airtel-logo.png"
+    }
+  },
   "users": {
-    "12345": { "balance": 0.00 },
-    "67890": { "balance": 523.9 }
-  }
+    "12345": { "balance": 1245.6, "username": "TestUser", "ref": null }
+  },
+  "pending": {},
+  "referrals": {}
 }
