@@ -157,7 +157,7 @@
       const userData = data.users[tgUserId];
       const balance = userData ? userData.balance : 0.0;
       document.querySelector(".balance-card h1").textContent =
-        "$" + balance.toFixed(2);
+  "Ksh " + balance.toLocaleString("en-KE", { minimumFractionDigits: 2 });
     } catch (err) {
       console.error("Error loading balance:", err);
     }
