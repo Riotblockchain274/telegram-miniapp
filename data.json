@@ -1,55 +1,6 @@
-<script>
-  // Telegram init
-  let tgUserId = "12345"; // default test ID
-
-  if (window.Telegram?.WebApp) {
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    const user = tg.initDataUnsafe?.user;
-    document.getElementById("username").textContent =
-      user?.first_name || "User";
-    if (user?.id) tgUserId = user.id.toString();
+{
+  "users": {
+    "12345": { "balance": 1245.6 },
+    "67890": { "balance": 523.9 }
   }
-
-  // Navigation logic
-  const screens = {
-    home: document.getElementById("home"),
-    wallet: document.getElementById("wallet"),
-    settings: document.getElementById("settings"),
-  };
-
-  const navButtons = {
-    home: document.getElementById("homeBtn"),
-    wallet: document.getElementById("walletBtn"),
-    settings: document.getElementById("settingsBtn"),
-  };
-
-  function showScreen(name) {
-    for (const key in screens) {
-      screens[key].classList.remove("active-screen");
-      navButtons[key].classList.remove("active");
-    }
-    screens[name].classList.add("active-screen");
-    navButtons[name].classList.add("active");
-  }
-
-  navButtons.home.onclick = () => showScreen("home");
-  navButtons.wallet.onclick = () => showScreen("wallet");
-  navButtons.settings.onclick = () => showScreen("settings");
-
-  // Load user balance dynamically
-  async function loadBalance() {
-    try {
-      const response = await fetch("data.json");
-      const data = await response.json();
-      const userData = data.users[tgUserId];
-      const balance = userData ? userData.balance : 0.0;
-      document.querySelector(".balance-card h1").textContent =
-        "$" + balance.toFixed(2);
-    } catch (err) {
-      console.error("Error loading balance:", err);
-    }
-  }
-
-  loadBalance();
-</script>
+}
