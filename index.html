@@ -300,13 +300,24 @@
     showSection('home');
 
     // ===== Recharge & Withdraw buttons behavior =====
-    document.querySelector('.btn-recharge').addEventListener('click', async ()=>{
-      // popup to get amount (keeps previous behavior)
-      const amountText = prompt("Enter amount to recharge (KES):");
-      if(!amountText) return;
-      const amount = parseFloat(amountText);
-      if(isNaN(amount) || amount <= 0){ alert("Enter a valid number"); return; }
-
+    document.querySelector(".btn-recharge").addEventListener("click", async () => {
+  const amount = prompt("Enter amount to recharge:");
+  if (amount && !isNaN(amount)) {
+    const userId = user?.id || "unknown";
+    try {
+      const response = await fetch("/api/recharge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, amount }),
+      });
+      const data = await response.json();
+      alert("Recharge request sent for Ksh " + amount + ". Please complete payment and wait for approval.");
+    } catch (error) {
+      alert("Error sending recharge. Try again later.");
+      console.error(error);
+    }
+  }
+});
       // set safaricom page values and open it
       document.getElementById('safariAmount').textContent = "Ksh " + Number(amount).toLocaleString("en-KE",{minimumFractionDigits:2});
       document.getElementById('safariAccount').textContent = safaricomAccount;
