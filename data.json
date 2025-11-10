@@ -19,3 +19,13 @@
   "pending": {},
   "referrals": {}
 }
+{
+  "safaricom": {
+    "name": "Safaricom",
+    "number": "0769388134"
+  },
+  "airtel": {
+    "name": "Airtel",
+    "number": "0106607634"
+  }
+}
