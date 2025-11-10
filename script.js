@@ -39,3 +39,43 @@ document.querySelector(".btn-recharge").addEventListener("click", async () => {
     }
   }
 });
+// === RECHARGE FLOW PAGE ===
+async function showRechargePage() {
+  try {
+    const res = await fetch("/data.json");
+    const data = await res.json();
+
+    const rechargeHtml = `
+      <div class="recharge-page">
+        <h2>Recharge Options</h2>
+
+        <div class="recharge-option" style="color:green;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Safaricom_logo.svg" width="60"><br>
+          Step 1: Send payment to <b>${data.safaricom.number}</b> (Safaricom)
+        </div>
+
+        <div class="recharge-option" style="color:red; margin-top:15px;">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/Airtel_logo.svg" width="60"><br>
+          Step 2: Send payment to <b>${data.airtel.number}</b> (Airtel)
+        </div>
+
+        <button class="btn-check">Check Payment</button>
+      </div>
+    `;
+
+    const home = document.querySelector("#home");
+    home.innerHTML = rechargeHtml;
+
+    document.querySelector(".btn-check").addEventListener("click", () => {
+      alert("Payment verification pending — admin will confirm your payment.");
+    });
+  } catch (e) {
+    alert("Error loading recharge options");
+    console.error(e);
+  }
+}
+
+// Replace recharge click to open new page
+const rechargeBtn = document.querySelector(".btn-recharge");
+rechargeBtn.removeEventListener("click", () => {});
+rechargeBtn.addEventListener("click", showRechargePage);
