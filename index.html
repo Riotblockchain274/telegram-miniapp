@@ -1,45 +1,32 @@
-<!-- Full index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Riotblockchain</title>
-  <style>
-    /* (reuse your existing styles or the previously provided styles) */
-    body{background:#0d0d0d;color:#fff;font-family:Inter,Arial,sans-serif;margin:0;padding:0}
-    main{padding:18px;padding-bottom:120px}
-    .balance-card{background:#111;padding:18px;border-radius:12px}
-    .button-row{display:flex;gap:12px;justify-content:center;margin-top:12px}
-    .btn{padding:10px 16px;border-radius:10px;background:#222;color:#fff;border:none;cursor:pointer}
-    .btn.primary{background:linear-gradient(90deg,#7d5fff,#5b3bff);color:#fff}
-    nav{position:fixed;bottom:0;width:100%;display:flex;justify-content:space-around;padding:12px 0;background:#0b0b0b}
-    nav button{background:none;border:none;color:#aaa;cursor:pointer}
-    nav button.active{color:#7d5fff}
-    .safari{display:none;padding:18px}
-    .safari.active{display:block}
-    .card{background:#111;padding:12px;border-radius:10px;margin:10px 0}
-    .copy-btn{padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#ccc}
-  </style>
+  <!-- External stylesheet -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main>
     <section id="home">
       <h2 id="welcome-text">Welcome, User</h2>
+
       <div class="balance-card">
         <p>Available Balance</p>
         <h1 id="balance">Ksh 0.00</h1>
       </div>
+
       <div class="button-row">
         <button id="btnRecharge" class="btn primary">Recharge</button>
         <button id="btnWithdraw" class="btn">Withdraw</button>
       </div>
+
       <button id="inviteBtn" class="btn" style="margin:12px auto;display:block">Invite Friends</button>
 
       <!-- Mining art -->
       <div id="mining" class="card" style="display:flex;align-items:center;gap:12px">
         <div id="miningArt" style="width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#7d5fff,#b38cff);display:flex;align-items:center;justify-content:center;font-size:36px;color:#d4af37;box-shadow:0 10px 30px rgba(91,59,255,0.12);">
-          <!-- will be animated -->
           ⛏️
         </div>
         <div>
@@ -51,11 +38,12 @@
     <!-- Safaricom / Airtel page -->
     <section id="safaricom" class="safari" aria-hidden="true">
       <h2>Confirm Payment</h2>
+
       <div class="card">
         <div><small>Step 1: Copy account</small></div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
           <div>
-            <div id="acctLabel" style="font-weight:700">Safaricom</div>
+            <div id="acctLabel" style="font-weight:700;color:green">Safaricom</div>
             <div id="acctNumber" style="font-weight:700">0117614107</div>
             <div style="color:#aaa;margin-top:6px">Amount: <span id="safAmount">Ksh 0</span></div>
           </div>
@@ -68,189 +56,5 @@
         <textarea id="smsText" style="width:100%;height:120px;margin-top:8px;background:#080808;color:#fff;border-radius:8px;border:1px solid rgba(255,255,255,0.03)"></textarea>
         <button id="checkBtn" class="btn" style="margin-top:8px" disabled>Check Payment</button>
       </div>
-      <button id="backHome" class="btn" style="margin-top:10px">Back</button>
-    </section>
-  </main>
 
-  <nav>
-    <button class="tab active" data-target="home">🏠 Home</button>
-    <button class="tab" data-target="wallet">💳 Wallet</button>
-    <button class="tab" data-target="products">📦 Products</button>
-    <button class="tab" data-target="settings">⚙️ Settings</button>
-    <button class="tab" data-target="contact">📞 Contact</button>
-  </nav>
-
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    // ========== CONFIG ==========
-    const BACKEND = "<BACKEND_BASE_URL>"; // e.g. https://myrbbackend.onrender.com
-    const BOT_WEBAPP = window.Telegram?.WebApp || {};
-    try{ BOT_WEBAPP.expand?.(); }catch(e){}
-    const user = BOT_WEBAPP.initDataUnsafe?.user || {};
-    const userId = String(user.id || ("guest_" + Math.floor(Math.random()*100000)));
-    const username = user.first_name || user.username || ("User" + userId.slice(-4));
-    document.getElementById('welcome-text').textContent = "👋 Welcome, " + username;
-
-    // register user on backend (sends ref if present in URL)
-    async function registerUserIfNeeded() {
-      try {
-        // read URL params to get referral token if one exists
-        const params = new URLSearchParams(window.location.search || window.location.hash.split('?')[1] || '');
-        const startParam = params.get('start') || params.get('startapp');
-        let ref = null;
-        if(startParam && startParam.startsWith('ref_')) {
-          // format: ref_<inviterId>_<token>
-          ref = startParam.split('_')[1] || null;
-        }
-        await fetch(BACKEND + '/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId, username, ref })
-        });
-      } catch (e) { console.warn("register failed", e); }
-    }
-
-    // load data (accounts, balance)
-    let dataCache = {};
-    async function loadData() {
-      try {
-        const res = await fetch(BACKEND + '/data.json');
-        dataCache = await res.json();
-        // if user exists in dataCache, update balance
-        const u = dataCache.users?.[userId];
-        if(u && typeof u.balance !== 'undefined') {
-          updateBalance(u.balance);
-        } else updateBalance(0);
-        // set accounts
-        document.getElementById('acctLabel').textContent = dataCache.accounts?.safaricom?.label || 'Safaricom';
-        document.getElementById('acctNumber').textContent = dataCache.accounts?.safaricom?.account || '';
-      } catch(e){ console.warn("could not load backend data", e); }
-    }
-
-    function updateBalance(num) {
-      document.getElementById('balance').textContent = "Ksh " + Number(num||0).toLocaleString('en-KE',{minimumFractionDigits:2});
-    }
-
-    // ====== Register then load data ======
-    registerUserIfNeeded().then(loadData);
-
-    // ====== Recharge flow ======
-    let pendingAmount = 0;
-    document.getElementById('btnRecharge').addEventListener('click', async ()=>{
-      const amount = prompt("Enter amount to recharge (KES):");
-      if(!amount) return;
-      const num = parseFloat(amount);
-      if(isNaN(num) || num <= 0) { alert("Enter a valid number"); return; }
-      pendingAmount = num;
-      // set safaricom/account fields (you can add selection later for Airtel)
-      // If you want to show Airtel option, you can add UI to select
-      document.getElementById('safAmount').textContent = "Ksh " + num.toLocaleString('en-KE',{minimumFractionDigits:2});
-      // ensure account shown is loaded from backend
-      const acct = dataCache.accounts?.safaricom?.account || '';
-      document.getElementById('acctNumber').textContent = acct;
-      // show safaricom page
-      showSection('safaricom');
-    });
-
-    // copy account
-    document.getElementById('copyAcct').addEventListener('click', async ()=>{
-      const acct = document.getElementById('acctNumber').textContent.trim();
-      try { await navigator.clipboard.writeText(acct); alert('Copied: ' + acct); }
-      catch(e){ alert('Account: ' + acct); }
-    });
-
-    // enable check button when SMS present (we mask digits before sending)
-    const sms = document.getElementById('smsText');
-    const checkBtn = document.getElementById('checkBtn');
-    sms.addEventListener('input', ()=>{
-      checkBtn.disabled = sms.value.trim().length < 8;
-    });
-
-    // on check, send pending to backend
-    checkBtn.addEventListener('click', async ()=>{
-      if(!pendingAmount) { alert('No pending amount. Start recharge again.'); return; }
-      const smsText = sms.value.trim();
-      // mask digits before sending, to keep SMS partially private
-      const masked = smsText.replace(/\d/g, '*');
-      try {
-        const res = await fetch(BACKEND + '/pending', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ userId, username, amount: pendingAmount, smsText: masked })
-        });
-        const j = await res.json();
-        if(j.ok) {
-          alert('Payment request submitted. Admin will verify and approve it shortly.');
-          sms.value = '';
-          pendingAmount = 0;
-          showSection('home');
-          // you can also push a local ticker message
-          pushTicker((user.phone_number ? maskPhone(user.phone_number) : maskPhone(userId)) + " requested recharge Ksh " + maskedAmountString(j.amount || pendingAmount));
-        } else {
-          alert('Error submitting request');
-        }
-      } catch (e) {
-        console.error(e);
-        alert('Failed to submit pending request');
-      }
-    });
-
-    function maskedAmountString(a){
-      return "Ksh " + Number(a||0).toLocaleString('en-KE',{minimumFractionDigits:2});
-    }
-
-    // ====== Withdraw (local request) ======
-    document.getElementById('btnWithdraw').addEventListener('click', async ()=>{
-      const amount = prompt('Enter amount to withdraw (KES):');
-      if(!amount) return;
-      const num = parseFloat(amount);
-      if(isNaN(num) || num<=0) { alert('Enter a valid amount'); return; }
-      // for withdraw we send a pending withdrawal request to backend (not implemented server-side yet)
-      alert('Your withdraw request was recorded. Admin will process it manually.');
-      // you could implement POST /withdraw similar to /pending
-    });
-
-    // ====== Invite link generation (unique per user) ======
-    document.getElementById('inviteBtn').addEventListener('click', async ()=>{
-      // format: https://t.me/<bot_username>?start=ref_<inviterId>_<token>
-      // We'll create a short token using timestamp
-      const token = Date.now().toString(36).slice(-6);
-      const inviter = userId;
-      const inviteParam = `ref_${inviter}_${token}`;
-      // create a webapp link or bot start link that includes start param
-      const botUsername = BOT_WEBAPP.initDataUnsafe?.bot_username || ''; // sometimes available
-      const link = botUsername ? `https://t.me/${botUsername}?start=${inviteParam}` : `${window.location.origin}${window.location.pathname}?start=${inviteParam}`;
-      // Save referral server-side? We saved in /register when new user opens with ref param.
-      try { await navigator.clipboard.writeText(link); alert('Invite link copied. Share it with friends!'); }
-      catch(e){ alert('Invite link: ' + link); }
-    });
-
-    // ====== Simple UI section switcher ======
-    const tabs = document.querySelectorAll('nav .tab');
-    const sections = document.querySelectorAll('main > section');
-    function showSection(id) {
-      sections.forEach(s => s.style.display = (s.id === id ? 'block' : 'none'));
-      tabs.forEach(t => t.classList.toggle('active', t.getAttribute('data-target') === id));
-    }
-    tabs.forEach(t => t.addEventListener('click', ()=> showSection(t.getAttribute('data-target'))));
-    showSection('home');
-
-    document.getElementById('backHome').addEventListener('click', ()=> showSection('home'));
-
-    // ====== ticker helper (simple) ======
-    function pushTicker(t) {
-      // simple: alert or console log, or you can extend earlier ticker implementation
-      console.log('TICKER:', t);
-    }
-
-    function maskPhone(raw){
-      try{
-        const s = String(raw);
-        if(s.length >= 7) return s.slice(0,2) + '***' + s.slice(-3);
-        return s;
-      } catch(e){ return raw; }
-    }
-  </script>
-</body>
-</html>
-<script src="script.js"></script>
+      <button id="
