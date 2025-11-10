@@ -1,93 +1,150 @@
-/* === General Page Setup === */
+/* ========= GLOBAL ========= */
 body {
-  font-family: 'Poppins', sans-serif;
+  background: #0d0d0d;
+  color: #fff;
+  font-family: Inter, Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background: #f7f7fa;
-  color: #222;
+}
+
+main {
+  padding: 18px;
+  padding-bottom: 120px;
+}
+
+/* ========= BALANCE CARD ========= */
+.balance-card {
+  background: #111;
+  padding: 18px;
+  border-radius: 12px;
   text-align: center;
 }
 
-h1, h2 {
-  margin-top: 10px;
+.balance-card p {
+  color: #bbb;
+  font-size: 14px;
+  margin-bottom: 5px;
 }
 
-button {
-  cursor: pointer;
+.balance-card h1 {
+  font-size: 26px;
+  margin: 0;
 }
 
-/* === Home Section === */
-.section {
-  display: none;
-  padding: 20px;
+/* ========= BUTTONS ========= */
+.button-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 12px;
 }
 
-#home {
-  display: block;
-}
-
-/* === Balance Card === */
-.balance-card {
-  background: linear-gradient(90deg, #6a11cb, #2575fc);
-  color: white;
-  border-radius: 15px;
-  padding: 15px;
-  margin: 20px auto;
-  width: 80%;
-  font-size: 18px;
-}
-
-/* === Buttons === */
-.btn-recharge, .btn-withdraw {
-  background: linear-gradient(90deg, purple, gold);
-  border: none;
-  color: white;
+.btn {
+  padding: 10px 16px;
   border-radius: 10px;
-  padding: 10px 25px;
-  margin: 10px;
-  font-size: 16px;
+  background: #222;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
-/* === Bottom Navigation === */
-.bottom-nav {
+.btn:hover {
+  opacity: 0.8;
+}
+
+.btn.primary {
+  background: linear-gradient(90deg, #7d5fff, #5b3bff);
+  color: #fff;
+}
+
+/* ========= NAVIGATION ========= */
+nav {
   position: fixed;
   bottom: 0;
-  left: 0;
   width: 100%;
   display: flex;
   justify-content: space-around;
-  align-items: center;
-  background-color: #fff;
-  border-top: 1px solid #ccc;
-  padding: 10px 0;
+  padding: 12px 0;
+  background: #0b0b0b;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.bottom-nav button {
-  flex: 1;
+nav button {
   background: none;
   border: none;
-  font-size: 16px;
+  color: #aaa;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* === Recharge Page === */
-.recharge-page {
-  text-align: center;
-  padding: 20px;
+nav button.active {
+  color: #7d5fff;
+  font-weight: 600;
 }
 
-.recharge-option {
-  border: 1px solid #ddd;
+/* ========= SECTIONS ========= */
+section {
+  display: none;
+}
+
+section.active {
+  display: block;
+}
+
+.card {
+  background: #111;
+  padding: 12px;
   border-radius: 10px;
+  margin: 10px 0;
+}
+
+/* ========= COPY BUTTON ========= */
+.copy-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  color: #ccc;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.copy-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ========= MINING ART ========= */
+#miningArt {
+  animation: spin 6s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ========= TEXTAREA ========= */
+textarea {
+  font-family: Inter, Arial, sans-serif;
+  resize: none;
   padding: 10px;
-  background: #f9f9f9;
-  margin-top: 15px;
 }
 
-.btn-check {
-  background: linear-gradient(90deg, purple, gold);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
-  margin-top: 20px;
+/* ========= TICKER (optional) ========= */
+#ticker {
+  background: rgba(125, 95, 255, 0.1);
+  color: #cfc2ff;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: slideTicker 12s linear infinite;
+}
+
+@keyframes slideTicker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
