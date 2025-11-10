@@ -1,4 +1,63 @@
-/* ========= GLOBAL ========= */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Riotblockchain</title>
+  <!-- External stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <section id="home">
+      <h2 id="welcome-text">Welcome, User</h2>
+
+      <div class="balance-card">
+        <p>Available Balance</p>
+        <h1 id="balance">Ksh 0.00</h1>
+      </div>
+
+      <div class="button-row">
+        <button id="btnRecharge" class="btn primary">Recharge</button>
+        <button id="btnWithdraw" class="btn">Withdraw</button>
+      </div>
+
+      <button id="inviteBtn" class="btn" style="margin:12px auto;display:block">Invite Friends</button>
+
+      <!-- Mining art -->
+      <div id="mining" class="card" style="display:flex;align-items:center;gap:12px">
+        <div id="miningArt" style="width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#7d5fff,#b38cff);display:flex;align-items:center;justify-content:center;font-size:36px;color:#d4af37;box-shadow:0 10px 30px rgba(91,59,255,0.12);">
+          ⛏️
+        </div>
+        <div>
+          <h3>Riotblockchain Mining Plant</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Safaricom / Airtel page -->
+    <section id="safaricom" class="safari" aria-hidden="true">
+      <h2>Confirm Payment</h2>
+
+      <div class="card">
+        <div><small>Step 1: Copy account</small></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <div>
+            <div id="acctLabel" style="font-weight:700;color:green">Safaricom</div>
+            <div id="acctNumber" style="font-weight:700">0117614107</div>
+            <div style="color:#aaa;margin-top:6px">Amount: <span id="safAmount">Ksh 0</span></div>
+          </div>
+          <div><button id="copyAcct" class="copy-btn">Copy</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div><small>Step 2: Paste your SMS confirmation</small></div>
+        <textarea id="smsText" style="width:100%;height:120px;margin-top:8px;background:#080808;color:#fff;border-radius:8px;border:1px solid rgba(255,255,255,0.03)"></textarea>
+        <button id="checkBtn" class="btn" style="margin-top:8px" disabled>Check Payment</button>
+      </div>
+
+      <button id="/* ========= GLOBAL ========= */
 body {
   background: #0d0d0d;
   color: #fff;
